@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/my/main",
+    "pages/bookkeeping/main",
+    "pages/index/main",
+    "pages/logs/main",
+    "pages/counter/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "AnTools",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "backgroundColor": "#fafafa",
+    "selectedColor": "#333",
+    "borderStyle": "white",
+    "position": "bottom",
+    "list": [{
+      "text": "记账",
+      "pagePath": "pages/bookkeeping/main",
+      "iconPath": "static/tabs/orders.png",
+      "selectedIconPath": "static/tabs/orders-active.png"
+    }, {
+      "text": "我",
+      "pagePath": "pages/my/main",
+      "iconPath": "static/tabs/home.png",
+      "selectedIconPath": "static/tabs/home-active.png"
+    }]
+  },
+  "usingComponents": {
+  }
+}
