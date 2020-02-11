@@ -83,7 +83,6 @@ export default {
 <style>
 @import "../static/colorui/main.wxss";
 @import "../static/colorui/icon.wxss";
-/* @import '../static/wux/styles/index.wxss'; */
 .container {
   height: 100%;
   display: flex;

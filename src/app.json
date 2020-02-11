@@ -1,7 +1,8 @@
 {
   "pages": [
-    "pages/my/main",
     "pages/bookkeeping/main",
+    "pages/bookkeepingEdit/main",
+    "pages/my/main",
     "pages/index/main",
     "pages/logs/main",
     "pages/counter/main"
