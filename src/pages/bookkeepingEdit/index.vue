@@ -18,43 +18,57 @@
 
         <div class="typeList margin">
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-blue"></div>
+            <div class="cu-avatar round bg-blue">
+              <text class="cuIcon-sponsor"></text>
+            </div>
             <div class="margin-top-xs text-xs text-black">
               文字
             </div>
           </div>
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-grey"></div>
+            <div class="cu-avatar round bg-grey">
+              <text class="cuIcon-sponsorfill"></text>
+            </div>
             <div class="margin-top-xs text-xs text-grey">
               一
             </div>
           </div>
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-grey"></div>
+            <div class="cu-avatar round bg-grey">
+              <text class="cuIcon-home"></text>
+            </div>
             <div class="margin-top-xs text-xs text-grey">
               一二
             </div>
           </div>
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-grey"></div>
+            <div class="cu-avatar round bg-grey">
+              <text class="cuIcon-redpacket"></text>
+            </div>
             <div class="margin-top-xs text-xs text-grey">
               一二三
             </div>
           </div>
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-grey"></div>
+            <div class="cu-avatar round bg-grey">
+              <text class="cuIcon-recharge"></text>
+            </div>
             <div class="margin-top-xs text-xs text-grey">
               一二三四
             </div>
           </div>
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-grey"></div>
+            <div class="cu-avatar round bg-grey">
+              <text class="cuIcon-baby"></text>
+            </div>
             <div class="margin-top-xs text-xs text-grey">
               一二三四五
             </div>
           </div>
           <div class="typeListItem">
-            <div class="cu-avatar round cuIcon-people bg-grey"></div>
+            <div class="cu-avatar round bg-grey">
+              <text class="cuIcon-clothes"></text>
+            </div>
             <div class="margin-top-xs text-xs text-grey">
               一二三四五六
             </div>

@@ -1,17 +1,5 @@
 <script>
 export default {
-  // globalData () {
-  //   return {
-  //     token: '',
-  //     isLogin: false,
-  //     userInfo: {},
-  //     loginData: {
-  //       encryptedData: '',
-  //       iv: ''
-  //     }
-  //   }
-  // },
-
   onLaunch: function () {
     this.getCode()
       .then((res) => {
@@ -61,7 +49,6 @@ export default {
         })
       })
     },
-
     getUserInfo () {
       var that = this
       return new Promise((resolve, reject) => {
@@ -83,13 +70,4 @@ export default {
 <style>
 @import "../static/colorui/main.wxss";
 @import "../static/colorui/icon.wxss";
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 200rpx 0;
-  box-sizing: border-box;
-}
 </style>

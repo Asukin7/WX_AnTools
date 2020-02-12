@@ -79,7 +79,7 @@ export default {
     }
   },
 
-  onShow: function () {
+  onLoad: function () {
     var that = this
     // 延迟，否则还未从后端获取到数据就已经写入
     setTimeout(function () {
