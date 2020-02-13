@@ -2,10 +2,7 @@
   "pages": [
     "pages/bookkeeping/main",
     "pages/bookkeepingEdit/main",
-    "pages/my/main",
-    "pages/index/main",
-    "pages/logs/main",
-    "pages/counter/main"
+    "pages/my/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

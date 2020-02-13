@@ -11,6 +11,7 @@ export default {
         })
       })
       .then((res) => {
+        this.globalData.isLogin = true
         this.globalData.token = res.data.token
         // 判断是否授权
         wx.getSetting({
@@ -26,7 +27,7 @@ export default {
                   })
                 })
                 .then((res) => {
-                  this.globalData.isLogin = true
+                  this.globalData.isUserInfo = true
                   this.globalData.userInfo = res.data
                   console.log(this.globalData)
                 })

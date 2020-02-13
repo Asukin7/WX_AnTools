@@ -1,5 +1,6 @@
 <script>
 const bkTypeTo = {
+  /* income */
   wages: {
     name: '工资',
     icon: 'cuIcon-vipcard'
@@ -12,24 +13,7 @@ const bkTypeTo = {
     name: '生意',
     icon: 'cuIcon-shop'
   },
-
-  transfer: {
-    name: '转账',
-    icon: 'cuIcon-refund'
-  },
-  redpacket: {
-    name: '红包',
-    icon: 'cuIcon-redpacket'
-  },
-  favour: {
-    name: '人情',
-    icon: 'cuIcon-sponsor'
-  },
-  other: {
-    name: '其他',
-    icon: 'cuIcon-more'
-  },
-
+  /* expend */
   diet: {
     name: '饮食',
     icon: 'cuIcon-emojifill'
@@ -89,9 +73,30 @@ const bkTypeTo = {
   contribution: {
     name: '捐款',
     icon: 'cuIcon-evaluate'
+  },
+  /* common */
+  transfer: {
+    name: '转账',
+    icon: 'cuIcon-refund'
+  },
+  redpacket: {
+    name: '红包',
+    icon: 'cuIcon-redpacket'
+  },
+  favour: {
+    name: '人情',
+    icon: 'cuIcon-sponsor'
+  },
+  other: {
+    name: '其他',
+    icon: 'cuIcon-more'
   }
 }
+const incomeArray = ['wages', 'bonus', 'business', 'transfer', 'redpacket', 'favour', 'other']
+const expendArray = ['diet', 'traffic', 'clothes', 'shopping', 'entertainment', 'education', 'communication', 'network', 'housing', 'payment', 'parenting', 'travel', 'medical', 'present', 'contribution', 'transfer', 'redpacket', 'favour', 'other']
 export default {
-  bkTypeTo
+  bkTypeTo,
+  incomeArray,
+  expendArray
 }
 </script>

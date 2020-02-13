@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="UserCenter-bg bg-black">
-      <div v-if="isLogin" class="noLogin">
+      <div v-if="isUserInfo" class="noLogin">
         <image class="cu-avatar xl round margin-bottom" :src="userInfo.avatarUrl" mode="cover"></image>
         <text class="text-xl">{{userInfo.nickName}}</text>
       </div>
@@ -74,7 +74,7 @@
 export default {
   data () {
     return {
-      isLogin: false,
+      isUserInfo: false,
       userInfo: {}
     }
   },
@@ -83,8 +83,8 @@ export default {
     var that = this
     // 延迟，否则还未从后端获取到数据就已经写入
     setTimeout(function () {
-      if (that.globalData.isLogin) {
-        that.isLogin = that.globalData.isLogin
+      if (that.globalData.isUserInfo) {
+        that.isUserInfo = that.globalData.isUserInfo
         that.userInfo = that.globalData.userInfo
       } else {
         console.log('用户未登录')
@@ -109,9 +109,9 @@ export default {
               header: {'Authorization': this.globalData.token}
             })
               .then((res) => {
-                this.globalData.isLogin = true
+                this.globalData.isUserInfo = true
                 this.globalData.userInfo = res.data
-                this.isLogin = this.globalData.isLogin
+                this.isUserInfo = this.globalData.isUserInfo
                 this.userInfo = this.globalData.userInfo
               })
             console.log('获取用户数据成功')

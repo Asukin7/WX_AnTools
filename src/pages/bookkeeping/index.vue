@@ -2,7 +2,7 @@
   <div>
     <div class="container bg-black">
       <text class="text-xl">{{sumWhen==null?'全部':sumWhen}}支出<text class="text-sl">{{sumExpendMoney==null?'0':sumExpendMoney}}</text>元</text>
-      <text class="text-l">收入<text class="text-l">{{sumIncomeMoney==null?'0':sumIncomeMoney}}</text>元</text>
+      <text class="text-l">收入<text class="text-xl">{{sumIncomeMoney==null?'0':sumIncomeMoney}}</text>元</text>
     </div>
 
     <div class="cu-bar search bg-white">
@@ -13,12 +13,12 @@
       <div class="action">
         <picker mode="date" fields="month" :value="bkDateStr" :start="startDate" :end="endDate" @change="dateChange($event)">
           <div class="picker">
-            {{bkDateStr}}<text class="cuIcon-triangledownfill"/>
+            {{bkDateStr==null?'全部时间':bkDateStr}}<text class="cuIcon-triangledownfill"/>
           </div>
         </picker>
       </div>
     </div>
-
+    <div class="text-center text-grey" style="padding: 200rpx 0;" v-if="bookkeepingGroup.length==0">暂无数据</div>
     <div class="cu-list menu-avatar bg-white" style="margin:0rpx" v-for="(item,index) in bookkeepingGroup" :key="index">
       <!-- 头 -->
       <div class="flex justify-between padding text-black">
@@ -31,14 +31,11 @@
           <!-- 账单图标 -->
           <text :class="bkTypeTo[itemData.bkType].icon" style="font-size:x-large;"></text>
         </div>
-        <div class="content flex-sub">
+        <div class="content flex-sub" @click="openBookkeepingEdit(itemData)">
           <div class="flex justify-between text-l">
             <div>
               <!-- 账单类型 -->
               <text>{{bkTypeTo[itemData.bkType].name}}</text>
-              <!-- - -->
-              <!-- 账单备注 -->
-              <!-- <text class="text-cut">{{itemData.bkRemark}}</text> -->
             </div>
             <div>
               <!-- 账单金额 -->
@@ -47,22 +44,20 @@
           </div>
           <div class="flex justify-between text-sm text-gray">
             <!-- 账单备注 -->
-            <text class="text-cut">{{itemData.bkRemark}}</text>
-            <!-- 收入/支出 -->
-            <!-- <text>{{itemData.incomeOrExpend=='income'?'收入':'支出'}}</text> -->
+            <text class="text-cut">{{itemData.bkRemark==null?'':itemData.bkRemark}}</text>
             <!-- 账单日期 -->
             <text>{{itemData.hhmm}}</text>
           </div>
         </div>
         <div class="move">
-          <view class="bg-red">删除</view>
+          <view class="bg-red" @click="deleteBookkeeping(itemData)">删除</view>
         </div>
         <div :class="index==bookkeepingGroup.length-1&&indexData==item.bkData.length-1?'':'list_border'"/>
       </div>
 
     </div>
 
-    <div class="bg-blue round shadow fixed-button" @click="openBookkeepingEdit()">
+    <div class="bg-blue round shadow fixed-button" @click="openBookkeepingEdit(null)">
       <text class="cuIcon-add lg"/>
     </div>
   </div>
@@ -72,14 +67,16 @@
 export default {
   data () {
     return {
+      bkRemark: null,
+      bkDateStr: null,
+
       bookkeepingListAll: null,
       sumIncomeMoney: null,
       sumExpendMoney: null,
       bookkeepingGroup: null,
       bkTypeTo: null,
+
       sumWhen: null,
-      bkRemark: null,
-      bkDateStr: null,
       startDate: '2019-01',
       endDate: null,
       modalName: null
@@ -90,19 +87,27 @@ export default {
     this.bkTypeTo = this.$bkTypeTo.bkTypeTo
     this.bkDateStr = this.endDate = this.getNowYearMonth()
     this.sumWhen = new Date().getMonth() + 1 + '月'
+
     var that = this
-    // 延迟，否则还未从后端获取到数据就已经写入
     setTimeout(function () {
-      if (that.globalData.isLogin) {
-        that.getBookkeepingData()
-      } else {
-        console.log('用户未登录')
-      }
+      that.getBookkeepingData()
     }, 2000)
   },
 
+  onShow: function () {
+    this.getBookkeepingData()
+  },
+
   methods: {
+    getNowYearMonth () {
+      var now = new Date()
+      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2)
+    },
     getBookkeepingData () {
+      if (this.bkRemark !== null) {
+        this.bkDateStr = null
+        this.sumWhen = null
+      }
       this.$wxRequest.post({
         url: 'bookkeeping/listAll',
         data: {
@@ -164,28 +169,55 @@ export default {
         m += 12
         --y
       }
-      return weekday[(d + 2 * m + Math.floor(3 * (m + 1) / 5) + y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400)) % 7]
-    },
-    getNowYearMonth () {
-      var now = new Date()
-      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2)
+      return weekday[(d + 2 * m + Math.floor(3 * (m + 1) / 5) + y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + 1) % 7]
     },
     searchConfirm (e) {
       var value = e.mp.detail.value
       if (value.split(' ').join('').length === 0) {
+        wx.showToast({
+          title: '搜索内容不可为空',
+          icon: 'none',
+          duration: 2000
+        })
         return
       }
       this.bkRemark = e.mp.detail.value
-      this.bkDateStr = null
       this.getBookkeepingData()
-      this.sumWhen = null
-      this.bkDateStr = '全部时间'
     },
     dateChange (e) {
       this.bkRemark = null
       this.bkDateStr = e.mp.detail.value
       this.getBookkeepingData()
       this.sumWhen = Number(this.bkDateStr.substr(5, 2)) + '月'
+    },
+    deleteBookkeeping (data) {
+      var that = this
+      wx.showModal({
+        title: '确认删除？',
+        confirmColor: '#ff0000',
+        success (res) {
+          if (res.confirm) {
+            that.$wxRequest.post({
+              url: 'bookkeeping/delete',
+              data: {
+                'id': data.id
+              },
+              header: {'Authorization': that.globalData.token}
+            })
+              .then((res) => {
+                if (res.code === 0) {
+                  wx.showToast({
+                    title: '删除成功',
+                    icon: 'success',
+                    duration: 2000
+                  })
+                  that.getBookkeepingData()
+                }
+              })
+          }
+        }
+      })
+      that.modalName = null
     },
     listTouchStartFun (e) {
       this.ListTouchStart = e.mp.changedTouches[0].pageX
@@ -201,9 +233,13 @@ export default {
     listTouchEndFun (e) {
       this.ListTouchDirection = null
     },
-    openBookkeepingEdit () {
+    openBookkeepingEdit (data) {
+      var str = '?id=0'
+      if (data !== null) {
+        str = '?id=' + data.id + '&incomeOrExpend=' + data.incomeOrExpend + '&bkMoney=' + data.bkMoney + '&bkType=' + data.bkType + '&bkRemark=' + (data.bkRemark === null ? '' : data.bkRemark) + '&bkDate=' + data.bkDate
+      }
       wx.navigateTo({
-        url: '../bookkeepingEdit/main'
+        url: '../bookkeepingEdit/main' + str
       })
     }
   }
