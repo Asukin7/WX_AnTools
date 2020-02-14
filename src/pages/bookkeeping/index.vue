@@ -18,11 +18,13 @@
         </picker>
       </div>
     </div>
-    <div class="text-center text-grey" style="padding: 200rpx 0;" v-if="bookkeepingGroup.length==0">暂无数据</div>
+
+    <div class="text-center text-grey" style="padding: 200rpx 0;" v-if="bookkeepingGroup==null||bookkeepingGroup.length==0">暂无数据</div>
+    
     <div class="cu-list menu-avatar bg-white" style="margin:0rpx" v-for="(item,index) in bookkeepingGroup" :key="index">
       <!-- 头 -->
       <div class="flex justify-between padding text-black">
-        <div>{{item.mdw}}</div>
+        <div>{{item.date}}</div>
         <div>支<text class="text-green">￥{{item.sumExpendMoney}}</text>　收<text class="text-orange">￥{{item.sumIncomeMoney}}</text></div>
       </div>
       <!-- 体 -->
@@ -46,7 +48,7 @@
             <!-- 账单备注 -->
             <text class="text-cut">{{itemData.bkRemark==null?'':itemData.bkRemark}}</text>
             <!-- 账单日期 -->
-            <text>{{itemData.hhmm}}</text>
+            <text>{{itemData.time}}</text>
           </div>
         </div>
         <div class="move">
@@ -54,7 +56,6 @@
         </div>
         <div :class="index==bookkeepingGroup.length-1&&indexData==item.bkData.length-1?'':'list_border'"/>
       </div>
-
     </div>
 
     <div class="bg-blue round shadow fixed-button" @click="openBookkeepingEdit(null)">
@@ -73,9 +74,10 @@ export default {
       bookkeepingListAll: null,
       sumIncomeMoney: null,
       sumExpendMoney: null,
+
+      isOnShow: false,
       bookkeepingGroup: null,
       bkTypeTo: null,
-
       sumWhen: null,
       startDate: '2019-01',
       endDate: null,
@@ -85,24 +87,24 @@ export default {
 
   onLoad: function () {
     this.bkTypeTo = this.$bkTypeTo.bkTypeTo
-    this.bkDateStr = this.endDate = this.getNowYearMonth()
-    this.sumWhen = new Date().getMonth() + 1 + '月'
-
-    var that = this
-    setTimeout(function () {
-      that.getBookkeepingData()
-    }, 2000)
+    var now = new Date()
+    this.bkDateStr = this.endDate = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2)
+    this.sumWhen = now.getMonth() + 1 + '月'
   },
 
   onShow: function () {
-    this.getBookkeepingData()
+    if (this.isOnShow) {
+      this.getBookkeepingData()
+    } else {
+      var that = this
+      setTimeout(function () {
+        that.getBookkeepingData()
+      }, 2000)
+    }
+    this.isOnShow = true
   },
 
   methods: {
-    getNowYearMonth () {
-      var now = new Date()
-      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2)
-    },
     getBookkeepingData () {
       if (this.bkRemark !== null) {
         this.bkDateStr = null
@@ -128,19 +130,20 @@ export default {
       var dest = []
       for (var i = 0; i < this.bookkeepingListAll.length; i++) {
         var tempMap = this.bookkeepingListAll[i]
-        tempMap['hhmm'] = tempMap.bkDate.substr(11, 5)
+        var dateTimeArray = [...tempMap.bkDate.split(' ')[0].split('-'), ...tempMap.bkDate.split(' ')[1].split(':')]
+        tempMap['time'] = dateTimeArray[3] + ':' + dateTimeArray[4]
         var id = tempMap.bkDate.substr(0, 10) // 依赖分组字段可自行更改！
         if (!map[id]) {
-          var year = tempMap.bkDate.substr(0, 4)
-          var month = tempMap.bkDate.substr(5, 2)
-          var day = tempMap.bkDate.substr(8, 2)
+          var date = null
+          if (this.bkRemark == null) date = dateTimeArray[1] + '月' + dateTimeArray[2] + '号 ' + this.getWeek(dateTimeArray[0], dateTimeArray[1], dateTimeArray[2])
+          else date = dateTimeArray[0] + '年' + dateTimeArray[1] + '月' + dateTimeArray[2] + '号 ' + this.getWeek(dateTimeArray[0], dateTimeArray[1], dateTimeArray[2])
           var sumIncomeMoney = 0
           var sumExpendMoney = 0
           if (tempMap.incomeOrExpend === 'income') sumIncomeMoney = tempMap.bkMoney
           if (tempMap.incomeOrExpend === 'expend') sumExpendMoney = tempMap.bkMoney
           dest.push({
             id: id,
-            mdw: month + '月' + day + '号 ' + this.getWeek(year, month, day),
+            date: date,
             sumIncomeMoney: sumIncomeMoney,
             sumExpendMoney: sumExpendMoney,
             bkData: [tempMap]
@@ -187,8 +190,8 @@ export default {
     dateChange (e) {
       this.bkRemark = null
       this.bkDateStr = e.mp.detail.value
+      this.sumWhen = Number(this.bkDateStr.split('-')[1]) + '月'
       this.getBookkeepingData()
-      this.sumWhen = Number(this.bkDateStr.substr(5, 2)) + '月'
     },
     deleteBookkeeping (data) {
       var that = this
@@ -205,19 +208,17 @@ export default {
               header: {'Authorization': that.globalData.token}
             })
               .then((res) => {
-                if (res.code === 0) {
-                  wx.showToast({
-                    title: '删除成功',
-                    icon: 'success',
-                    duration: 2000
-                  })
-                  that.getBookkeepingData()
-                }
+                wx.showToast({
+                  title: '删除成功',
+                  icon: 'success',
+                  duration: 2000
+                })
+                that.getBookkeepingData()
               })
           }
         }
       })
-      that.modalName = null
+      this.modalName = null
     },
     listTouchStartFun (e) {
       this.ListTouchStart = e.mp.changedTouches[0].pageX

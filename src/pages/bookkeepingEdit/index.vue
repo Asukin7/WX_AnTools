@@ -28,7 +28,7 @@
         </div>
 
         <div class="cu-form-group solid-top">
-          <textarea data-modal='1' placeholder="备注" :value="bkRemark" @input="inputBkRemark($event)"></textarea>
+          <textarea data-modal='1' maxlength="512" placeholder="备注" :value="bkRemark" @input="inputBkRemark($event)"></textarea>
         </div>
 
         <picker class="bg-grey light text-right" mode="multiSelector" :value="dateTime" :range="dateTimeArray" @change="changeDateTime" @columnchange="changeDateTimeColumn">
@@ -64,20 +64,20 @@ export default {
   onLoad: function (option) {
     this.bkTypeTo = this.$bkTypeTo.bkTypeTo
     // 获取完整的年月日时分秒，以及默认显示的数组
-    var obj = this.$dateTimePicker.dateTimePicker('2019', new Date().getFullYear())
+    var obj = this.$dateTimePicker.dateTimePicker('2019', new Date().getFullYear(), option.bkDate)
     // 精确到分的处理，将数组的秒去掉
     obj.dateTimeArray.pop()
     obj.dateTime.pop()
     this.dateTime = obj.dateTime
     this.dateTimeArray = obj.dateTimeArray
 
-    this.id = null
-    this.bkMoney = null
-    this.bkRemark = null
-    this.changeIncomeOrExpend('expend')
-    this.changeBkDate()
-
-    if (Number(option.id) !== 0) {
+    if (Number(option.id) === 0) {
+      this.id = null
+      this.bkMoney = null
+      this.bkRemark = null
+      this.changeIncomeOrExpend('expend')
+      this.changeBkDate()
+    } else {
       this.id = Number(option.id)
       this.changeIncomeOrExpend(option.incomeOrExpend)
       this.bkMoney = option.bkMoney
@@ -137,10 +137,8 @@ export default {
     changeDateTimeColumn (e) {
       var arr = this.dateTime
       var dateArr = this.dateTimeArray
-
       arr[e.mp.detail.column] = e.mp.detail.value
       dateArr[2] = this.$dateTimePicker.getMonthDay(dateArr[0][arr[0]], dateArr[1][arr[1]])
-
       this.dateTime = arr
       this.dateTimeArray = dateArr
       this.changeBkDate()
@@ -176,16 +174,14 @@ export default {
         header: {'Authorization': this.globalData.token}
       })
         .then((res) => {
-          if (res.code === 0) {
-            wx.navigateBack({
-              delta: 2
-            })
-            wx.showToast({
-              title: '添加成功',
-              icon: 'success',
-              duration: 2000
-            })
-          }
+          wx.navigateBack({
+            delta: 2
+          })
+          wx.showToast({
+            title: '添加成功',
+            icon: 'success',
+            duration: 2000
+          })
         })
     }
   }

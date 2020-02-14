@@ -29,11 +29,10 @@ export default {
                 .then((res) => {
                   this.globalData.isUserInfo = true
                   this.globalData.userInfo = res.data
-                  console.log(this.globalData)
                 })
               console.log('获取用户数据成功')
             } else {
-              console.log('未授权')
+              console.log('用户未授权')
             }
           }
         })

@@ -16,27 +16,15 @@
 
     <div class="padding flex text-center text-grey bg-white shadow shadow-lg">
       <div class="flex flex-sub flex-direction solid-right">
-        <div class="text-xxl text-orange">￥{{monthExpendMoney==null?'--':monthExpendMoney}}</div>
-        <div class="margin-top-sm">
-          <text>本月支出</text>
-        </div>
-      </div>
-      <div class="flex flex-sub flex-direction solid-right">
-        <div class="text-xxl text-blue">￥{{monthIncomeMoney==null?'--':monthIncomeMoney}}</div>
-        <div class="margin-top-sm">
-          <text>本月收入</text>
-        </div>
-      </div>
-      <div class="flex flex-sub flex-direction solid-right">
-        <div class="text-xxl text-orange">￥{{allExpendMoney==null?'--':allExpendMoney}}</div>
-        <div class="margin-top-sm">
-          <text>全部支出</text>
+        <div class="text-xxl text-orange">{{totalNumber==null?'--':totalNumber}}</div>
+        <div>
+          <text>记账条数</text>
         </div>
       </div>
       <div class="flex flex-sub flex-direction">
-        <div class="text-xxl text-blue">￥{{allIncomeMoney==null?'--':allIncomeMoney}}</div>
-        <div class="margin-top-sm">
-          <text>全部收入</text>
+        <div class="text-xxl text-blue">{{totalDays==null?'--':totalDays}}</div>
+        <div>
+          <text>记账天数</text>
         </div>
       </div>
     </div>
@@ -45,7 +33,7 @@
       <div class="cu-item arrow">
         <navigator class="content" url="" hover-class="none" bindtap = "">
           <text class="cuIcon-formfill text-green"></text>
-          <text class="text-grey">启动日志</text>
+          <text class="text-grey">记账统计</text>
         </navigator>
       </div>
       <div class="cu-item arrow">
@@ -74,22 +62,34 @@
 export default {
   data () {
     return {
+      isOnShow: false,
       isUserInfo: false,
-      userInfo: {}
+      userInfo: {},
+      totalNumber: null,
+      totalDays: null
     }
   },
 
   onLoad: function () {
     var that = this
-    // 延迟，否则还未从后端获取到数据就已经写入
     setTimeout(function () {
       if (that.globalData.isUserInfo) {
         that.isUserInfo = that.globalData.isUserInfo
         that.userInfo = that.globalData.userInfo
-      } else {
-        console.log('用户未登录')
       }
     }, 2000)
+  },
+
+  onShow: function () {
+    if (this.isOnShow) {
+      this.getAllTotalNumberAndDays()
+    } else {
+      var that = this
+      setTimeout(function () {
+        that.getAllTotalNumberAndDays()
+      }, 2000)
+    }
+    this.isOnShow = true
   },
 
   methods: {
@@ -116,10 +116,21 @@ export default {
               })
             console.log('获取用户数据成功')
           } else {
-            console.log('未授权')
+            console.log('用户未授权')
           }
         }
       })
+    },
+    getAllTotalNumberAndDays () {
+      this.$wxRequest.post({
+        url: 'bookkeeping/allTotalNumberAndDays',
+        data: {},
+        header: {'Authorization': this.globalData.token}
+      })
+        .then((res) => {
+          this.totalNumber = res.data.totalNumber
+          this.totalDays = res.data.totalDays
+        })
     }
   }
 }
