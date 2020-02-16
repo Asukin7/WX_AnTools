@@ -174,9 +174,7 @@ export default {
         header: {'Authorization': this.globalData.token}
       })
         .then((res) => {
-          wx.navigateBack({
-            delta: 2
-          })
+          wx.navigateBack()
           wx.showToast({
             title: '添加成功',
             icon: 'success',

@@ -30,29 +30,23 @@
     </div>
 
     <div class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
-      <div class="cu-item arrow">
-        <navigator class="content" url="" hover-class="none" bindtap = "">
-          <text class="cuIcon-formfill text-green"></text>
+      <div class="cu-item arrow" @click="openBookkeepingStatistics()">
+        <div class="content">
+          <text class="cuIcon-rankfill text-green"></text>
           <text class="text-grey">记账统计</text>
-        </navigator>
+        </div>
       </div>
       <div class="cu-item arrow">
-        <div class="content" bindtap="">
+        <div class="content">
           <text class="cuIcon-appreciatefill text-red"></text>
           <text class="text-grey">赞赏支持</text>
         </div>
       </div>
       <div class="cu-item arrow">
-        <div class="content" bindtap="">
-          <text class="cuIcon-writefill text-cyan"></text>
-          <text class="text-grey">意见反馈</text>
-        </div>
-      </div>
-      <div class="cu-item arrow">
-        <navigator class="content" url="" hover-class="none" bindtap="">
+        <div class="content">
           <text class="cuIcon-creativefill text-orange"></text>
           <text class="text-grey">关于我们</text>
-        </navigator>
+        </div>
       </div>
     </div>
   </div>
@@ -131,6 +125,11 @@ export default {
           this.totalNumber = res.data.totalNumber
           this.totalDays = res.data.totalDays
         })
+    },
+    openBookkeepingStatistics () {
+      wx.navigateTo({
+        url: '../bookkeepingStatistics/main'
+      })
     }
   }
 }

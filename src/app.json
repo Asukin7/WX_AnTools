@@ -2,6 +2,8 @@
   "pages": [
     "pages/bookkeeping/main",
     "pages/bookkeepingEdit/main",
+    "pages/bookkeepingStatistics/main",
+    "pages/bookkeepingList/main",
     "pages/my/main"
   ],
   "window": {

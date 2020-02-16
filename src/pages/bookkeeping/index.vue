@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container bg-black">
+    <div class="container bg-black" @click="openBookkeepingStatistics()">
       <text class="text-xl">{{sumWhen==null?'全部':sumWhen}}支出<text class="text-sl">{{sumExpendMoney==null?'0':sumExpendMoney}}</text>元</text>
       <text class="text-l">收入<text class="text-xl">{{sumIncomeMoney==null?'0':sumIncomeMoney}}</text>元</text>
     </div>
@@ -29,7 +29,7 @@
       </div>
       <!-- 体 -->
       <div class="cu-item" :class="modalName=='move-box-'+index+'-'+indexData?'move-cur':''" v-for="(itemData,indexData) in item.bkData" :key="indexData" @touchstart="listTouchStartFun($event)" @touchmove="listTouchMoveFun($event)" @touchend="listTouchEndFun($event)" :data-target="'move-box-'+index+'-'+indexData">
-        <div class="cu-avatar round lg" :class="itemData.incomeOrExpend=='income'?'bg-orange':'bg-green'">
+        <div class="cu-avatar round lg" :class="itemData.incomeOrExpend=='income'?'bg-orange':'bg-green'" @click="openBookkeepingList(itemData)">
           <!-- 账单图标 -->
           <text :class="bkTypeTo[itemData.bkType].icon" style="font-size:x-large;"></text>
         </div>
@@ -174,6 +174,11 @@ export default {
       }
       return weekday[(d + 2 * m + Math.floor(3 * (m + 1) / 5) + y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + 1) % 7]
     },
+    openBookkeepingStatistics () {
+      wx.navigateTo({
+        url: '../bookkeepingStatistics/main'
+      })
+    },
     searchConfirm (e) {
       var value = e.mp.detail.value
       if (value.split(' ').join('').length === 0) {
@@ -192,6 +197,15 @@ export default {
       this.bkDateStr = e.mp.detail.value
       this.sumWhen = Number(this.bkDateStr.split('-')[1]) + '月'
       this.getBookkeepingData()
+    },
+    openBookkeepingList (data) {
+      var str = null
+      if (data !== null) {
+        str = '?incomeOrExpend=' + data.incomeOrExpend + '&bkType=' + data.bkType + '&bkDateStr=' + this.bkDateStr
+      }
+      wx.navigateTo({
+        url: '../bookkeepingList/main' + str
+      })
     },
     deleteBookkeeping (data) {
       var that = this
