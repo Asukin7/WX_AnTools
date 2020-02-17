@@ -4,7 +4,8 @@
     "pages/bookkeepingEdit/main",
     "pages/bookkeepingStatistics/main",
     "pages/bookkeepingList/main",
-    "pages/my/main"
+    "pages/my/main",
+    "pages/about/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

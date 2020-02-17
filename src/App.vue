@@ -1,23 +1,24 @@
 <script>
 export default {
   onLaunch: function () {
+    // 获取code
     this.getCode()
       .then((res) => {
-        // 获取token
-        console.log(res)
+        // 发送code获取token
         return this.$wxRequest.post({
           url: 'user/login',
           data: res
         })
       })
       .then((res) => {
+        // 设置登录状态并绑定token
         this.globalData.isLogin = true
         this.globalData.token = res.data.token
-        // 判断是否授权
+        // 判断是否拥有获取用户信息的权限
         wx.getSetting({
           success: (res) => {
             if (res.authSetting['scope.userInfo']) {
-              // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+              // 发送用户信息并获取用户信息
               this.getUserInfo()
                 .then(() => {
                   return this.$wxRequest.post({
@@ -27,12 +28,10 @@ export default {
                   })
                 })
                 .then((res) => {
+                  // 设置用户信息状态
                   this.globalData.isUserInfo = true
                   this.globalData.userInfo = res.data
                 })
-              console.log('获取用户数据成功')
-            } else {
-              console.log('用户未授权')
             }
           }
         })
@@ -40,6 +39,7 @@ export default {
   },
 
   methods: {
+    // 获取code
     getCode () {
       return new Promise((resolve, reject) => {
         wx.login({
@@ -49,6 +49,7 @@ export default {
         })
       })
     },
+    // 发送用户信息并获取用户信息
     getUserInfo () {
       var that = this
       return new Promise((resolve, reject) => {

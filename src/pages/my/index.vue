@@ -1,17 +1,20 @@
 <template>
   <div>
-    <div class="UserCenter-bg bg-black">
-      <div v-if="isUserInfo" class="noLogin">
-        <image class="cu-avatar xl round margin-bottom" :src="userInfo.avatarUrl" mode="cover"></image>
-        <text class="text-xl">{{userInfo.nickName}}</text>
-      </div>
-      <div v-else class="noLogin">
-        <div class="cu-avatar xl round margin-bottom">
-          <text class="cuIcon-people text-white"></text>
+    
+    <div class="container bg-black">
+      <image class="container-bg" mode="scaleToFill" src="../../static/images/background.jpg"></image>
+      <div class="contenter-main">
+        <div v-if="isUserInfo" class="noLogin">
+          <image class="cu-avatar xl round margin-bottom" :src="userInfo.avatarUrl" mode="cover"></image>
+          <text class="text-xl">{{userInfo.nickName}}</text>
         </div>
-        <button type="default" size="mini" open-type="getUserInfo" @getuserinfo="getUserInfo">请登录</button>
+        <div v-else class="noLogin">
+          <div class="cu-avatar xl round margin-bottom">
+            <text class="cuIcon-people text-white"></text>
+          </div>
+          <button type="default" size="mini" open-type="getUserInfo" @getuserinfo="getUserInfo">请登录</button>
+        </div>
       </div>
-      <image src="../../static/images/wave.gif" mode="scaleToFill" class="gif-wave"></image>
     </div>
 
     <div class="padding flex text-center text-grey bg-white shadow shadow-lg">
@@ -36,19 +39,26 @@
           <text class="text-grey">记账统计</text>
         </div>
       </div>
-      <div class="cu-item arrow">
+      <div class="cu-item arrow" @click="copyGitHubLink()">
+        <div class="content">
+          <text class="cuIcon-github text-grey"></text>
+          <text class="text-grey">项目地址</text>
+        </div>
+      </div>
+      <div class="cu-item arrow" @click="showAppreciationCode()">
         <div class="content">
           <text class="cuIcon-appreciatefill text-red"></text>
           <text class="text-grey">赞赏支持</text>
         </div>
       </div>
-      <div class="cu-item arrow">
+      <div class="cu-item arrow" @click="openAbout()">
         <div class="content">
           <text class="cuIcon-creativefill text-orange"></text>
-          <text class="text-grey">关于我们</text>
+          <text class="text-grey">关于软件</text>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -67,6 +77,7 @@ export default {
   onLoad: function () {
     var that = this
     setTimeout(function () {
+      // 若已获取用户信息则直接绑定用户信息
       if (that.globalData.isUserInfo) {
         that.isUserInfo = that.globalData.isUserInfo
         that.userInfo = that.globalData.userInfo
@@ -75,6 +86,7 @@ export default {
   },
 
   onShow: function () {
+    // 获取记账总条数与总天数
     if (this.isOnShow) {
       this.getAllTotalNumberAndDays()
     } else {
@@ -87,12 +99,11 @@ export default {
   },
 
   methods: {
-    // 用户登录操作
+    // 获取授权与用户信息
     getUserInfo (e) {
       wx.getSetting({
         success: (res) => {
           if (res.authSetting['scope.userInfo']) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
             this.globalData.loginData = {
               encryptedData: e.mp.detail.encryptedData,
               iv: e.mp.detail.iv
@@ -108,13 +119,11 @@ export default {
                 this.isUserInfo = this.globalData.isUserInfo
                 this.userInfo = this.globalData.userInfo
               })
-            console.log('获取用户数据成功')
-          } else {
-            console.log('用户未授权')
           }
         }
       })
     },
+    // 获取记账总条数与总天数
     getAllTotalNumberAndDays () {
       this.$wxRequest.post({
         url: 'bookkeeping/allTotalNumberAndDays',
@@ -126,9 +135,34 @@ export default {
           this.totalDays = res.data.totalDays
         })
     },
+    // 打开记账统计页面
     openBookkeepingStatistics () {
       wx.navigateTo({
         url: '../bookkeepingStatistics/main'
+      })
+    },
+    // 复制GitHub链接
+    copyGitHubLink () {
+      wx.setClipboardData({
+        data: 'https://github.com/Asukin7/WX_AnTools',
+        success: res => {
+          wx.showToast({
+            title: '已复制',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 显示赞赏码
+    showAppreciationCode () {
+      wx.previewImage({
+        urls: ['/static/images/appreciationCode.jpg']
+      })
+    },
+    // 打开关于软件页面
+    openAbout () {
+      wx.navigateTo({
+        url: '../about/main'
       })
     }
   }
@@ -136,34 +170,34 @@ export default {
 </script>
 
 <style>
-.UserCenter-bg {
-  background-image: url(https://image.weilanwl.com/color2.0/index.jpg);
-  background-size: cover;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  color: #fff;
-  padding-top: 40rpx;
-  height: 450rpx;
-  font-weight: 300;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-}
-.UserCenter-bg .gif-wave{
-  position: absolute;
-  mix-blend-mode: screen;
-  z-index: 99;
-  width: 100%;
-  height: 100rpx;
-  bottom: 0;
-  left: 0;
-}
-.noLogin{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 500rpx;
+    z-index: 1;
+  }
+  .container .container-bg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+  }
+  .container .contenter-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50rpx;
+    z-index: 6;
+  }
+  .noLogin{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
 </style>

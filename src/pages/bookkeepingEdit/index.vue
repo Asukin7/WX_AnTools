@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <div class="cu-card case margin-top">
       <div class="cu-item shadow">
         <scroll-view class="nav text-center margin-bottom">
@@ -40,6 +41,7 @@
     <div class="padding" style="position:fixed;width:100%;bottom:30rpx;">
       <button class="cu-btn" :class="incomeOrExpend=='income'?'bg-orange':'bg-green'" style="width:100%;height:80rpx" @click="saveBookkeeping()">保存</button>
     </div>
+
   </div>
 </template>
 
@@ -88,6 +90,7 @@ export default {
   },
 
   methods: {
+    // 更改收入或支出选择
     changeIncomeOrExpend (iOe) {
       if (iOe === 'income') {
         this.incomeOrExpend = 'income'
@@ -99,16 +102,18 @@ export default {
         this.bkType = this.bkTypeArray[0]
       }
     },
+    // 输入金额
     inputBkMoney (e) {
       this.bkMoney = e.mp.detail.value
-      if (this.bkMoney === '.') {
+      if (this.bkMoney === '.') { // 金额首位不能为小数点
         this.bkMoney = null
         return
       }
-      if (!(/^(\d?)+(\.\d{0,2})?$/.test(this.bkMoney))) { // 正则验证，金额小数点后不能大于两位数字
+      if (!(/^(\d?)+(\.\d{0,2})?$/.test(this.bkMoney))) { // 金额小数点后不能大于两位数字
         this.bkMoney = this.bkMoney.substr(0, this.bkMoney.length - 1)
       }
     },
+    // 更改类型
     changeBkType (bt) {
       if (bt !== null) {
         this.bkType = bt
@@ -116,9 +121,11 @@ export default {
         this.bkType = this.bkTypeArray[0]
       }
     },
+    // 输入备注
     inputBkRemark (e) {
       this.bkRemark = e.mp.detail.value
     },
+    // 更改日期
     changeBkDate () {
       var year = this.dateTimeArray[0][this.dateTime[0]]
       var month = this.dateTimeArray[1][this.dateTime[1]]
@@ -130,19 +137,7 @@ export default {
       var minute = this.dateTimeArray[4][this.dateTime[4]]
       this.bkDate = year + '-' + month + '-' + day + ' ' + hour + ':' + minute
     },
-    changeDateTime (e) {
-      this.dateTime = e.mp.detail.value
-      this.changeBkDate()
-    },
-    changeDateTimeColumn (e) {
-      var arr = this.dateTime
-      var dateArr = this.dateTimeArray
-      arr[e.mp.detail.column] = e.mp.detail.value
-      dateArr[2] = this.$dateTimePicker.getMonthDay(dateArr[0][arr[0]], dateArr[1][arr[1]])
-      this.dateTime = arr
-      this.dateTimeArray = dateArr
-      this.changeBkDate()
-    },
+    // 保存账单
     saveBookkeeping () {
       if (this.bkMoney === null || this.bkMoney === '') {
         wx.showToast({
@@ -181,6 +176,19 @@ export default {
             duration: 2000
           })
         })
+    },
+    changeDateTime (e) {
+      this.dateTime = e.mp.detail.value
+      this.changeBkDate()
+    },
+    changeDateTimeColumn (e) {
+      var arr = this.dateTime
+      var dateArr = this.dateTimeArray
+      arr[e.mp.detail.column] = e.mp.detail.value
+      dateArr[2] = this.$dateTimePicker.getMonthDay(dateArr[0][arr[0]], dateArr[1][arr[1]])
+      this.dateTime = arr
+      this.dateTimeArray = dateArr
+      this.changeBkDate()
     }
   }
 }

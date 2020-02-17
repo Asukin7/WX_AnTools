@@ -1,8 +1,12 @@
 <template>
   <div>
+
     <div class="container bg-black" @click="openBookkeepingStatistics()">
-      <text class="text-xl">{{sumWhen==null?'全部':sumWhen}}支出<text class="text-sl">{{sumExpendMoney==null?'0':sumExpendMoney}}</text>元</text>
-      <text class="text-l">收入<text class="text-xl">{{sumIncomeMoney==null?'0':sumIncomeMoney}}</text>元</text>
+      <image class="container-bg" mode="scaleToFill" src="../../static/images/background.jpg"></image>
+      <div class="contenter-main">
+        <text class="text-xl">{{sumWhen==null?'全部':sumWhen}}支出<text class="text-sl">{{sumExpendMoney==null?'0':sumExpendMoney}}</text>元</text>
+        <text class="text-l">收入<text class="text-xl">{{sumIncomeMoney==null?'0':sumIncomeMoney}}</text>元</text>
+      </div>
     </div>
 
     <div class="cu-bar search bg-white">
@@ -61,6 +65,7 @@
     <div class="bg-blue round shadow fixed-button" @click="openBookkeepingEdit(null)">
       <text class="cuIcon-add lg"/>
     </div>
+
   </div>
 </template>
 
@@ -105,6 +110,7 @@ export default {
   },
 
   methods: {
+    // 获取账单数据
     getBookkeepingData () {
       if (this.bkRemark !== null) {
         this.bkDateStr = null
@@ -125,6 +131,82 @@ export default {
           this.bookkeepingGrouping()
         })
     },
+    // 搜索备注回车
+    searchConfirm (e) {
+      var value = e.mp.detail.value
+      if (value.split(' ').join('').length === 0) {
+        wx.showToast({
+          title: '搜索内容不可为空',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      }
+      this.bkRemark = e.mp.detail.value
+      this.getBookkeepingData()
+    },
+    // 搜索日期更改
+    dateChange (e) {
+      this.bkRemark = null
+      this.bkDateStr = e.mp.detail.value
+      this.sumWhen = Number(this.bkDateStr.split('-')[1]) + '月'
+      this.getBookkeepingData()
+    },
+    // 删除账单数据
+    deleteBookkeeping (data) {
+      var that = this
+      wx.showModal({
+        title: '确认删除？',
+        confirmColor: '#ff0000',
+        success (res) {
+          if (res.confirm) {
+            that.$wxRequest.post({
+              url: 'bookkeeping/delete',
+              data: {
+                'id': data.id
+              },
+              header: {'Authorization': that.globalData.token}
+            })
+              .then((res) => {
+                wx.showToast({
+                  title: '删除成功',
+                  icon: 'success',
+                  duration: 2000
+                })
+                that.getBookkeepingData()
+              })
+          }
+        }
+      })
+      this.modalName = null
+    },
+    // 打开账单统计页面
+    openBookkeepingStatistics () {
+      wx.navigateTo({
+        url: '../bookkeepingStatistics/main'
+      })
+    },
+    // 打开账单列表页面
+    openBookkeepingList (data) {
+      var str = null
+      if (data !== null) {
+        str = '?incomeOrExpend=' + data.incomeOrExpend + '&bkType=' + data.bkType + '&bkDateStr=' + this.bkDateStr
+      }
+      wx.navigateTo({
+        url: '../bookkeepingList/main' + str
+      })
+    },
+    // 打开编辑账单页面
+    openBookkeepingEdit (data) {
+      var str = '?id=0'
+      if (data !== null) {
+        str = '?id=' + data.id + '&incomeOrExpend=' + data.incomeOrExpend + '&bkMoney=' + data.bkMoney + '&bkType=' + data.bkType + '&bkRemark=' + (data.bkRemark === null ? '' : data.bkRemark) + '&bkDate=' + data.bkDate
+      }
+      wx.navigateTo({
+        url: '../bookkeepingEdit/main' + str
+      })
+    },
+    // 账单数据按日期分组
     bookkeepingGrouping () {
       var map = {}
       var dest = []
@@ -163,6 +245,7 @@ export default {
       }
       this.bookkeepingGroup = dest
     },
+    // 获取星期数
     getWeek (year, month, day) {
       var weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
       var y = Number(year)
@@ -173,66 +256,6 @@ export default {
         --y
       }
       return weekday[(d + 2 * m + Math.floor(3 * (m + 1) / 5) + y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + 1) % 7]
-    },
-    openBookkeepingStatistics () {
-      wx.navigateTo({
-        url: '../bookkeepingStatistics/main'
-      })
-    },
-    searchConfirm (e) {
-      var value = e.mp.detail.value
-      if (value.split(' ').join('').length === 0) {
-        wx.showToast({
-          title: '搜索内容不可为空',
-          icon: 'none',
-          duration: 2000
-        })
-        return
-      }
-      this.bkRemark = e.mp.detail.value
-      this.getBookkeepingData()
-    },
-    dateChange (e) {
-      this.bkRemark = null
-      this.bkDateStr = e.mp.detail.value
-      this.sumWhen = Number(this.bkDateStr.split('-')[1]) + '月'
-      this.getBookkeepingData()
-    },
-    openBookkeepingList (data) {
-      var str = null
-      if (data !== null) {
-        str = '?incomeOrExpend=' + data.incomeOrExpend + '&bkType=' + data.bkType + '&bkDateStr=' + this.bkDateStr
-      }
-      wx.navigateTo({
-        url: '../bookkeepingList/main' + str
-      })
-    },
-    deleteBookkeeping (data) {
-      var that = this
-      wx.showModal({
-        title: '确认删除？',
-        confirmColor: '#ff0000',
-        success (res) {
-          if (res.confirm) {
-            that.$wxRequest.post({
-              url: 'bookkeeping/delete',
-              data: {
-                'id': data.id
-              },
-              header: {'Authorization': that.globalData.token}
-            })
-              .then((res) => {
-                wx.showToast({
-                  title: '删除成功',
-                  icon: 'success',
-                  duration: 2000
-                })
-                that.getBookkeepingData()
-              })
-          }
-        }
-      })
-      this.modalName = null
     },
     listTouchStartFun (e) {
       this.ListTouchStart = e.mp.changedTouches[0].pageX
@@ -247,15 +270,6 @@ export default {
     },
     listTouchEndFun (e) {
       this.ListTouchDirection = null
-    },
-    openBookkeepingEdit (data) {
-      var str = '?id=0'
-      if (data !== null) {
-        str = '?id=' + data.id + '&incomeOrExpend=' + data.incomeOrExpend + '&bkMoney=' + data.bkMoney + '&bkType=' + data.bkType + '&bkRemark=' + (data.bkRemark === null ? '' : data.bkRemark) + '&bkDate=' + data.bkDate
-      }
-      wx.navigateTo({
-        url: '../bookkeepingEdit/main' + str
-      })
     }
   }
 }
@@ -263,15 +277,28 @@ export default {
 
 <style>
   .container {
-    background-image: url(https://image.weilanwl.com/color2.0/index.jpg);
-    background-size: cover;
-    height: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    padding: 200rpx 0;
-    box-sizing: border-box;
+    overflow: hidden;
+    height: 500rpx;
+    z-index: 1;
+  }
+  .container .container-bg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+  }
+  .container .contenter-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50rpx;
+    z-index: 6;
   }
   .list_border {
     position: fixed;

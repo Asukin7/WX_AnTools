@@ -1,9 +1,11 @@
 <template>
   <div>
+
     <div class="flex bg-white">
       <div class="flex-sub text-center padding solid" @click="orderByDate()"><text :class="orderBy=='date'?'text-blue':''">时间<text class="cuIcon-order"></text></text></div>
       <div class="flex-sub text-center padding solid" @click="orderByMoney()"><text :class="orderBy=='money'?'text-blue':''">金额<text class="cuIcon-order"></text></text></div>
     </div>
+
     <div class="text-center text-grey" style="padding: 200rpx 0;" v-if="bookkeepingListView==null||bookkeepingListView.length==0">暂无数据</div>
     
     <div class="cu-list menu-avatar bg-white" style="margin:0rpx">
@@ -45,7 +47,6 @@
 export default {
   data () {
     return {
-      orderBy: null,
       incomeOrExpend: null,
       bkType: null,
       bkDateStr: null,
@@ -54,13 +55,20 @@ export default {
       bookkeepingListView: null,
 
       bkTypeTo: null,
+      order: null,
+      orderBy: null,
       modalName: null
     }
   },
 
   onLoad: function (option) {
+    this.bookkeepingListAll = null
+    this.bookkeepingListView = null
+
     this.bkTypeTo = this.$bkTypeTo.bkTypeTo
+    this.order = true
     this.orderBy = 'date'
+    this.modalName = null
 
     this.incomeOrExpend = option.incomeOrExpend
     this.bkType = option.bkType
@@ -72,6 +80,7 @@ export default {
   },
 
   methods: {
+    // 获取账单数据
     getBookkeepingData () {
       this.$wxRequest.post({
         url: 'bookkeeping/listAll',
@@ -84,51 +93,43 @@ export default {
       })
         .then((res) => {
           this.bookkeepingListAll = res.data.bookkeepingListAll
-          this.bookkeepingListView = this.getBookkeepingListOrderByDate()
+          if (this.orderBy === 'date') {
+            this.bookkeepingListView = this.getBookkeepingListOrderByDate()
+            if (!this.order) {
+              this.bookkeepingListView.reverse()
+            }
+          }
+          if (this.orderBy === 'money') {
+            this.bookkeepingListView = this.getBookkeepingListOrderByMoney()
+            if (!this.order) {
+              this.bookkeepingListView.reverse()
+            }
+          }
         })
     },
+    // 按日期排序
     orderByDate () {
       if (this.orderBy === 'date') {
+        this.order = !this.order
         this.bookkeepingListView.reverse()
       } else {
-        this.bookkeepingListView = this.getBookkeepingListOrderByDate()
+        this.order = true
         this.orderBy = 'date'
+        this.bookkeepingListView = this.getBookkeepingListOrderByDate()
       }
     },
+    // 按金额排序
     orderByMoney () {
       if (this.orderBy === 'money') {
+        this.order = !this.order
         this.bookkeepingListView.reverse()
       } else {
-        this.bookkeepingListView = this.getBookkeepingListOrderByMoney()
+        this.order = true
         this.orderBy = 'money'
+        this.bookkeepingListView = this.getBookkeepingListOrderByMoney()
       }
     },
-    getBookkeepingListOrderByDate () {
-      var tempList = []
-      for (var i = 0; i < this.bookkeepingListAll.length; i++) {
-        tempList.push(this.bookkeepingListAll[i])
-      }
-      return tempList
-    },
-    getBookkeepingListOrderByMoney () {
-      var tempList = []
-      for (var i = 0; i < this.bookkeepingListAll.length; i++) {
-        tempList.push(this.bookkeepingListAll[i])
-      }
-      tempList.sort(function (a, b) {
-        return b.bkMoney - a.bkMoney
-      })
-      return tempList
-    },
-    openBookkeepingEdit (data) {
-      var str = '?id=0'
-      if (data !== null) {
-        str = '?id=' + data.id + '&incomeOrExpend=' + data.incomeOrExpend + '&bkMoney=' + data.bkMoney + '&bkType=' + data.bkType + '&bkRemark=' + (data.bkRemark === null ? '' : data.bkRemark) + '&bkDate=' + data.bkDate
-      }
-      wx.navigateTo({
-        url: '../bookkeepingEdit/main' + str
-      })
-    },
+    // 删除账单数据
     deleteBookkeeping (data) {
       var that = this
       wx.showModal({
@@ -155,6 +156,35 @@ export default {
         }
       })
       this.modalName = null
+    },
+    // 打开编辑账单页面
+    openBookkeepingEdit (data) {
+      var str = '?id=0'
+      if (data !== null) {
+        str = '?id=' + data.id + '&incomeOrExpend=' + data.incomeOrExpend + '&bkMoney=' + data.bkMoney + '&bkType=' + data.bkType + '&bkRemark=' + (data.bkRemark === null ? '' : data.bkRemark) + '&bkDate=' + data.bkDate
+      }
+      wx.navigateTo({
+        url: '../bookkeepingEdit/main' + str
+      })
+    },
+    // 获取按日期排序的账单数组
+    getBookkeepingListOrderByDate () {
+      var tempList = []
+      for (var i = 0; i < this.bookkeepingListAll.length; i++) {
+        tempList.push(this.bookkeepingListAll[i])
+      }
+      return tempList
+    },
+    // 获取按金额排序的账单数组
+    getBookkeepingListOrderByMoney () {
+      var tempList = []
+      for (var i = 0; i < this.bookkeepingListAll.length; i++) {
+        tempList.push(this.bookkeepingListAll[i])
+      }
+      tempList.sort(function (a, b) {
+        return b.bkMoney - a.bkMoney
+      })
+      return tempList
     },
     listTouchStartFun (e) {
       this.ListTouchStart = e.mp.changedTouches[0].pageX

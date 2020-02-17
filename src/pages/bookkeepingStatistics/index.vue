@@ -1,7 +1,7 @@
 <template>
   <div>
+
     <div class="cu-card case">
-      
       <div class="cu-item shadow">
         <div class="statis">
           <div class="statis_head flex">
@@ -129,6 +129,7 @@ export default {
   },
 
   methods: {
+    // 获取某年每月收支总额
     getMonthsSumMoney () {
       this.$wxRequest.post({
         url: 'bookkeeping/listMonthsSumMoney',
@@ -144,6 +145,7 @@ export default {
           this.setBarOption()
         })
     },
+    // 获取某月每日收支总额
     getDaysSumMoney () {
       this.$wxRequest.post({
         url: 'bookkeeping/listDaysSumMoney',
@@ -159,6 +161,7 @@ export default {
           this.setLineOption()
         })
     },
+    // 获取各类型收支总额
     getTypeSumMoney () {
       this.$wxRequest.post({
         url: 'bookkeeping/listTypeSumMoney',
@@ -172,6 +175,7 @@ export default {
           this.setIncomeOrExpend(this.incomeOrExpend)
         })
     },
+    // 搜索日期更改
     dateChange (e) {
       this.bkDateStr = e.mp.detail.value
       if (this.yearOrMonth === 'month') {
@@ -182,6 +186,7 @@ export default {
       }
       this.getTypeSumMoney()
     },
+    // 设置搜索日期最小单位
     setYearOrMonth (yOm) {
       var now = new Date()
       if (yOm === 'month') {
@@ -196,6 +201,7 @@ export default {
       }
       this.getTypeSumMoney()
     },
+    // 设置显示收入或支出
     setIncomeOrExpend (iOe) {
       if (iOe === 'income') {
         this.incomeOrExpend = 'income'
@@ -209,6 +215,17 @@ export default {
         this.setPieOption()
       }
     },
+    // 打开账单列表页面
+    openBookkeepingList (data) {
+      var str = null
+      if (data !== null) {
+        str = '?incomeOrExpend=' + this.incomeOrExpend + '&bkType=' + data.name + '&bkDateStr=' + this.bkDateStr
+      }
+      wx.navigateTo({
+        url: '../bookkeepingList/main' + str
+      })
+    },
+    // 数据nameValueList格式转换
     nameValueListToArrayList (nameValueList) {
       var arrayList = []
       for (var i = 0; i < nameValueList.length; i++) {
@@ -219,6 +236,7 @@ export default {
       }
       return arrayList
     },
+    // 数据nameValueList求总值Value
     nameValueListToSumValue (nameValueList) {
       var sumValue = 0
       for (var i = 0; i < nameValueList.length; i++) {
@@ -226,6 +244,7 @@ export default {
       }
       return sumValue
     },
+    // 数据nameValueList英转中Name
     nameValueListNameEnToCn (nameValueList) {
       var tempList = []
       for (var i = 0; i < nameValueList.length; i++) {
@@ -445,15 +464,6 @@ export default {
       canvas.setChart(pieChart)
       pieChart.setOption(this.pieOption)
       return pieChart
-    },
-    openBookkeepingList (data) {
-      var str = null
-      if (data !== null) {
-        str = '?incomeOrExpend=' + this.incomeOrExpend + '&bkType=' + data.name + '&bkDateStr=' + this.bkDateStr
-      }
-      wx.navigateTo({
-        url: '../bookkeepingList/main' + str
-      })
     }
   }
 }
