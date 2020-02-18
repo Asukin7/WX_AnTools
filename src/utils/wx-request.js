@@ -1,4 +1,4 @@
-const host = 'http://192.168.2.93/AnTools/' // 写自己的域名
+const host = 'http://193.112.243.31:8080/AnTools/' // 写自己的域名
 
 function request (url, method, data, header = {}) {
   // wx.showLoading({
