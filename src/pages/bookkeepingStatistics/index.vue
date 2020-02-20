@@ -50,6 +50,7 @@
             </div>
           </div>
           <div class="statis_body">
+            <div class="text-center text-grey" style="padding: 160rpx 0;margin-bottom: 160rpx;" v-if="cnTypeList.length==0">暂无数据</div>
             <mpvue-echarts lazyLoad :echarts="echarts" :onInit="pieInit" canvasId="pie" ref="pieEcharts"/>
           </div>
         </div>
@@ -96,16 +97,15 @@ export default {
 
       incomeSumMoney: null,
       expendSumMoney: null,
-      enTypeList: null,
-      cnTypeList: null,
+      enTypeList: [],
+      cnTypeList: [],
 
-      bkTypeTo: null,
-
-      monthDay: null,
       bkDateStr: null,
 
-      startDate: '2019',
+      bkTypeTo: null,
+      startDate: '2019-01',
       endDate: null,
+      monthDay: null,
       yearOrMonth: null,
       incomeOrExpend: null,
       color: null,

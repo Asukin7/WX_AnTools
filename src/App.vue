@@ -1,5 +1,11 @@
 <script>
 export default {
+  data () {
+    return {
+      firstOnShow: true
+    }
+  },
+
   onLaunch: function () {
     // 获取code
     this.getCode()
@@ -12,7 +18,7 @@ export default {
       })
       .then((res) => {
         // 设置登录状态并绑定token
-        this.globalData.isLogin = true
+        this.globalData.loginDate = new Date().getTime()
         this.globalData.token = res.data.token
         // 判断是否拥有获取用户信息的权限
         wx.getSetting({
@@ -36,6 +42,30 @@ export default {
           }
         })
       })
+    this.refreshToken()
+  },
+
+  onShow: function () {
+    if (this.firstOnShow) {
+      this.firstOnShow = false
+      return
+    }
+    if (new Date().getTime() - this.globalData.loginDate > 1000 * 60 * 26) {
+      // 获取code
+      this.getCode()
+        .then((res) => {
+          // 发送code获取token
+          return this.$wxRequest.post({
+            url: 'user/login',
+            data: res
+          })
+        })
+        .then((res) => {
+          // 设置登录状态并绑定token
+          this.globalData.loginDate = new Date().getTime()
+          this.globalData.token = res.data.token
+        })
+    }
   },
 
   methods: {
@@ -63,6 +93,27 @@ export default {
           }
         })
       })
+    },
+    // 每26分钟刷新token
+    refreshToken () {
+      var that = this
+      setTimeout(() => {
+        // 获取code
+        that.getCode()
+          .then((res) => {
+            // 发送code获取token
+            return that.$wxRequest.post({
+              url: 'user/login',
+              data: res
+            })
+          })
+          .then((res) => {
+            // 设置登录状态并绑定token
+            that.globalData.loginDate = new Date().getTime()
+            that.globalData.token = res.data.token
+          })
+        that.refreshToken()
+      }, 1000 * 60 * 26)
     }
   }
 }

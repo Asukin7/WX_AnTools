@@ -14,7 +14,7 @@
 
         <div class="cu-form-group solid-bottom">
           <view class="text-price" style="font-size:80rpx;padding-left:30rpx;padding-right:30rpx;"></view>
-          <input data-modal='2' type="digit" maxlength="11" style="font-size:60rpx;height:100%;" :value="bkMoney" @input="inputBkMoney($event)"/>
+          <input data-modal='2' type="digit" maxlength="7" style="font-size:60rpx;height:100%;" :value="bkMoney" @input="inputBkMoney($event)"/>
         </div>
 
         <div class="typeList margin">
