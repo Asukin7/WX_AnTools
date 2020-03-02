@@ -47,16 +47,18 @@
 export default {
   data () {
     return {
+      // 发送的数据
       incomeOrExpend: null,
       bkType: null,
       bkDateStr: null,
-
+      // 接收的数据
       bookkeepingListAll: null,
+      // 接收处理后的数据
       bookkeepingListView: null,
-
-      bkTypeTo: null,
+      // 工具数据
       order: null,
       orderBy: null,
+      bkTypeTo: null,
       modalName: null
     }
   },

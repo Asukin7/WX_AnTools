@@ -2,7 +2,7 @@
   <div>
     
     <div class="container bg-black">
-      <image class="container-bg" mode="scaleToFill" src="../../static/images/background.jpg"></image>
+      <image class="container-bg" mode="scaleToFill" src="https://nnsststt.cn/images/background.jpg"></image>
       <div class="contenter-main">
         <div v-if="isUserInfo" class="noLogin">
           <image class="cu-avatar xl round margin-bottom" :src="userInfo.avatarUrl" mode="cover"></image>
@@ -15,6 +15,7 @@
           <button type="default" size="mini" open-type="getUserInfo" @getuserinfo="getUserInfo">请登录</button>
         </div>
       </div>
+      <image src="https://nnsststt.cn/images/wave.gif" mode="scaleToFill" class="container-wave"></image>
     </div>
 
     <div class="padding flex text-center text-grey bg-white shadow shadow-lg">
@@ -68,6 +69,7 @@ export default {
     return {
       isOnShow: false,
       isUserInfo: false,
+      // 接收的数据
       userInfo: {},
       totalNumber: null,
       totalDays: null
@@ -156,7 +158,7 @@ export default {
     // 显示赞赏码
     showAppreciationCode () {
       wx.previewImage({
-        urls: ['/static/images/appreciationCode.jpg']
+        urls: ['https://nnsststt.cn/images/appreciationCode.jpg']
       })
     },
     // 打开关于软件页面
@@ -185,6 +187,15 @@ export default {
     height: 100%;
     width: 100%;
     z-index: 2;
+  }
+  .container .container-wave{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    mix-blend-mode: screen;  
+    height: 100rpx;   
   }
   .container .contenter-main {
     display: flex;

@@ -2,11 +2,12 @@
   <div>
 
     <div class="container bg-black" @click="openBookkeepingStatistics()">
-      <image class="container-bg" mode="scaleToFill" src="../../static/images/background.jpg"></image>
+      <image class="container-bg" mode="scaleToFill" src="https://nnsststt.cn/images/background.jpg"></image>
       <div class="contenter-main">
-        <text class="text-xl">{{sumWhen==null?'全部':sumWhen}}支出<text class="text-sl">{{sumExpendMoney==null?'0':sumExpendMoney}}</text>元</text>
-        <text class="text-l">收入<text class="text-xl">{{sumIncomeMoney==null?'0':sumIncomeMoney}}</text>元</text>
+        <text class="text-xl">{{sumWhen==null?'全部':sumWhen}}支出<text class="text-sl">{{sumExpendMoneyComputed}}</text>元</text>
+        <text class="text-df">收入<text class="text-xl">{{sumIncomeMoneyComputed}}</text>元</text>
       </div>
+      <image src="https://nnsststt.cn/images/wave.gif" mode="scaleToFill" class="container-wave"></image>
     </div>
 
     <div class="cu-bar search bg-white">
@@ -73,20 +74,31 @@
 export default {
   data () {
     return {
+      isOnShow: false,
+      // 发送的数据
       bkRemark: null,
       bkDateStr: null,
-
+      // 接收的数据
       bookkeepingListAll: null,
       sumIncomeMoney: null,
       sumExpendMoney: null,
-
-      isOnShow: false,
+      // 接收处理后的数据
       bookkeepingGroup: null,
-      bkTypeTo: null,
+      // 工具数据
       sumWhen: null,
       startDate: '2019-01',
       endDate: null,
+      bkTypeTo: null,
       modalName: null
+    }
+  },
+
+  computed: {
+    sumIncomeMoneyComputed () {
+      return Number(this.sumIncomeMoney).toFixed(2)
+    },
+    sumExpendMoneyComputed () {
+      return Number(this.sumExpendMoney).toFixed(2)
     }
   },
 
@@ -291,6 +303,15 @@ export default {
     height: 100%;
     width: 100%;
     z-index: 2;
+  }
+  .container .container-wave{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    mix-blend-mode: screen;  
+    height: 100rpx;   
   }
   .container .contenter-main {
     display: flex;

@@ -27,10 +27,10 @@
           </div>
           <div class="statis_foot flex text-grey">
             <div class="flex flex-sub flex-direction solid-right">
-              <text>共支出：<text class="text-green">￥{{expendSumMoney==null?'--':expendSumMoney}}</text></text>
+              <text>共支出：<text class="text-green">￥{{expendSumMoneyComputed}}</text></text>
             </div>
             <div class="flex flex-sub flex-direction">
-              <text>共收入：<text class="text-orange">￥{{incomeSumMoney==null?'--':incomeSumMoney}}</text></text>
+              <text>共收入：<text class="text-orange">￥{{incomeSumMoneyComputed}}</text></text>
             </div>
           </div>
         </div>
@@ -91,25 +91,25 @@ let barChart, lineChart, pieChart
 export default {
   data () {
     return {
+      // 发送的数据
+      bkDateStr: null,
+      // 接收的数据
       monthsSumMoney: null,
       daysSumMoney: null,
       typeSumMoney: null,
-
+      // 接收处理后的数据
       incomeSumMoney: null,
       expendSumMoney: null,
       enTypeList: [],
       cnTypeList: [],
-
-      bkDateStr: null,
-
-      bkTypeTo: null,
+      // 工具数据
+      yearOrMonth: null,
+      incomeOrExpend: null,
       startDate: '2019-01',
       endDate: null,
       monthDay: null,
-      yearOrMonth: null,
-      incomeOrExpend: null,
+      bkTypeTo: null,
       color: null,
-
       echarts,
       barOption: null,
       lineOption: null,
@@ -121,11 +121,21 @@ export default {
     mpvueEcharts
   },
 
+  computed: {
+    expendSumMoneyComputed () {
+      return Number(this.expendSumMoney).toFixed(2)
+    },
+    incomeSumMoneyComputed () {
+      return Number(this.incomeSumMoney).toFixed(2)
+    }
+  },
+
   onLoad: function () {
     this.bkTypeTo = this.$bkTypeTo.bkTypeTo
     this.color = ['#37A2DA', '#32C5E9', '#67E0E3', '#91F2DE', '#FF84BA', '#CCCCFF', '#D1ABC0', '#BA79B1', '#9966CC', '#B50079', '#DE3163', '#FE4C40', '#F3715C', '#FF9F7F', '#FEDCBD', '#EEE8AA', '#FFDB5C', '#7FB80E', '#6BB073', '#7CFC00']
-    this.setYearOrMonth('year')
+    this.yearOrMonth = 'year'
     this.incomeOrExpend = 'expend'
+    setTimeout(() => this.setYearOrMonth(this.yearOrMonth), 500)
   },
 
   methods: {

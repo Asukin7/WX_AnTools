@@ -1,4 +1,4 @@
-const host = 'http://193.112.243.31:8080/AnTools/' // 写自己的域名
+const host = 'https://nnsststt.cn/AnTools/' // 写自己的域名
 
 function request (url, method, data, header = {}) {
   // wx.showLoading({
@@ -15,11 +15,12 @@ function request (url, method, data, header = {}) {
         if (res.data.code === 0) {
           resolve(res.data)
         } else {
-          wx.showToast({
-            title: '失败 ' + res.data.code,
-            icon: 'none',
-            duration: 2000
-          })
+          console.log('失败 ' + res.data.code)
+          // wx.showToast({
+          //   title: '失败 ' + res.data.code,
+          //   icon: 'none',
+          //   duration: 2000
+          // })
         }
       },
       fail: function () {

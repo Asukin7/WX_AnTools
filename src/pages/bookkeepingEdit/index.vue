@@ -49,13 +49,14 @@
 export default {
   data () {
     return {
+      // 发送的数据
       id: null,
       incomeOrExpend: null,
       bkMoney: null,
       bkType: null,
       bkRemark: null,
       bkDate: null,
-
+      // 工具数据
       bkTypeTo: null,
       bkTypeArray: null,
       dateTime: null,
