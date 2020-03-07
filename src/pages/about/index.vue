@@ -12,7 +12,7 @@
       <div class="text-df text-left margin-bottom-sm">此外，该软件可能还存在许多不足的地方，欢迎大家提出。<text :class="number==2?'text-red':''">喜欢</text>该软件的朋友也可以打赏作者，请作者喝杯奶茶。</div>
       <div class="text-df text-left margin-bottom-sm"></div>
       <div class="text-sm text-right">Asukin7</div>
-      <div class="text-sm text-right">V1.0.200303</div>
+      <div class="text-sm text-right">V1.0.200308</div>
     </div>
     
   </div>

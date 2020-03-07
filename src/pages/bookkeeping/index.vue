@@ -231,10 +231,10 @@ export default {
           var date = null
           if (this.bkRemark == null) date = dateTimeArray[1] + '月' + dateTimeArray[2] + '号 ' + this.getWeek(dateTimeArray[0], dateTimeArray[1], dateTimeArray[2])
           else date = dateTimeArray[0] + '年' + dateTimeArray[1] + '月' + dateTimeArray[2] + '号 ' + this.getWeek(dateTimeArray[0], dateTimeArray[1], dateTimeArray[2])
-          var sumIncomeMoney = 0
-          var sumExpendMoney = 0
-          if (tempMap.incomeOrExpend === 'income') sumIncomeMoney = tempMap.bkMoney
-          if (tempMap.incomeOrExpend === 'expend') sumExpendMoney = tempMap.bkMoney
+          var sumIncomeMoney = Number(0).toFixed(2)
+          var sumExpendMoney = Number(0).toFixed(2)
+          if (tempMap.incomeOrExpend === 'income') sumIncomeMoney = Number(tempMap.bkMoney).toFixed(2)
+          if (tempMap.incomeOrExpend === 'expend') sumExpendMoney = Number(tempMap.bkMoney).toFixed(2)
           dest.push({
             id: id,
             date: date,
@@ -247,8 +247,8 @@ export default {
           for (var j = 0; j < dest.length; j++) {
             var tempDest = dest[j]
             if (tempDest.id === id) {
-              if (tempMap.incomeOrExpend === 'income') tempDest.sumIncomeMoney += tempMap.bkMoney
-              if (tempMap.incomeOrExpend === 'expend') tempDest.sumExpendMoney += tempMap.bkMoney
+              if (tempMap.incomeOrExpend === 'income') tempDest.sumIncomeMoney = Number(Number(tempDest.sumIncomeMoney) + Number(tempMap.bkMoney)).toFixed(2)
+              if (tempMap.incomeOrExpend === 'expend') tempDest.sumExpendMoney = Number(Number(tempDest.sumExpendMoney) + Number(tempMap.bkMoney)).toFixed(2)
               tempDest.bkData.push(tempMap)
               break
             }
